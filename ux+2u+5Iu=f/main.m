@@ -33,7 +33,7 @@ ModelInfo.y_f = f(ModelInfo.x_f) + noise_f*randn(n_f,1);
 
 %% Optimize model
 % hyp = [logsigma logtheta alpha beta logsigma_n_u logsigma_n_f]
-hyp = log([1 1 exp(1) exp(1) 10^-3 10^-3]);
+hyp = [log([1 1]) 1 1 -5 -5];
 [ModelInfo.hyp,~,~] = minimize(hyp, @likelihood, -5000);
 
 fprintf(1,'alpha = %f\nbeta = %f\n\n', ModelInfo.hyp(3), ModelInfo.hyp(4));
