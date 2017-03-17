@@ -6,6 +6,8 @@ clc; close all;
 
 addpath ./Utilities
 
+set(0,'defaulttextinterpreter','latex')
+
 global ModelInfo
 
 %% Setup

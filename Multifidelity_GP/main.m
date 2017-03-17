@@ -7,6 +7,8 @@ rng('default')
 
 addpath ./Utilities
 
+set(0,'defaulttextinterpreter','latex')
+
 global ModelInfo
 
 %% Setup
