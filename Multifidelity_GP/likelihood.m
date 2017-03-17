@@ -1,3 +1,5 @@
+% @author: Maziar Raissi
+
 function [NLML,D_NLML]=likelihood(hyp)
 
 global ModelInfo

@@ -1,3 +1,5 @@
+% @author: Maziar Raissi
+
 function [mean_star, var_star] = predictor_f_H(x_star)
 
 global ModelInfo
