@@ -41,10 +41,12 @@ f_star = f(x_star);
 fprintf(1,'Relative L2 error f: %e\n', (norm(mean_f_star-f_star,2)/norm(f_star,2)));
 
 %% Plot Results
+set(0,'defaulttextinterpreter','latex')
+
 color = [55,126,184]/255;
 
 fig = figure(1);
-set(fig,'units','normalized','outerposition',[0 0 1 1])
+set(fig,'units','normalized','outerposition',[0 0 1 0.5])
 
 clear h;
 clear leg;
