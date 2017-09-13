@@ -1,6 +1,6 @@
 classdef Multifidelity_GP
     properties
-        X_L, y_L, X_H, y_H, D, N_L, N_H, hyp, jitter
+        X_L, y_L, X_H, y_H, D, N_L, N_H, hyp
     end
     
     methods
@@ -12,13 +12,11 @@ classdef Multifidelity_GP
             obj.X_H = X_H;
             obj.y_H = y_H;
             
-            hyp_L = [log(1) log(1*ones(1,obj.D))];
-            hyp_H = [log(1) log(1*ones(1,obj.D))];
+            hyp_L = [log(1) log(0.1*ones(1,obj.D))];
+            hyp_H = [log(1) log(0.1*ones(1,obj.D))];
             rho = 1;
-            obj.hyp = [hyp_L hyp_H rho -4 -5];
-            
-            obj.jitter = 1e-8;
-            
+            obj.hyp = [hyp_L hyp_H rho -4 -4];
+                        
             fprintf('Total number of parameters: %d\n', length(obj.hyp));
         end
         
@@ -43,14 +41,9 @@ classdef Multifidelity_GP
             
             K = [K_LL K_LH;
                 K_HL K_HH];
-            
-            K = K + eye(N).*obj.jitter;
-            
+             
             % Cholesky factorisation
-            [L,p]=chol(K,'lower');
-            if p > 0
-                fprintf(1,'Covariance is ill-conditioned\n');
-            end
+            L = jit_chol(K);
             
             alpha = L'\(L\y);
             NLML = 0.5*y'*alpha + sum(log(diag(L))) + log(2*pi)*N/2;
@@ -122,13 +115,8 @@ classdef Multifidelity_GP
             K = [K_LL K_LH;
                 K_HL K_HH];
             
-            K = K + eye(N).*obj.jitter;
-            
             % Cholesky factorisation
-            [L,p]=chol(K,'lower');
-            if p > 0
-                fprintf(1,'Covariance is ill-conditioned\n');
-            end
+            L = jit_chol(K);
             
             psi1 = rho*kernel(x_star, obj.X_L, obj.hyp(1:obj.D+1),0);
             psi2 = rho^2*kernel(x_star, obj.X_H, obj.hyp(1:obj.D+1),0) + ...
