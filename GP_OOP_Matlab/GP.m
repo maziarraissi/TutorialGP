@@ -1,75 +1,73 @@
 classdef GP
     properties
-        X, y, D, N, hyp, jitter
+        X, y, hyp, NLML
     end
     
     methods
-        function obj = GP(X, y)
-            [obj.N, obj.D] = size(X);
+        function obj = GP(X, y, hyp)
             obj.X = X;
             obj.y = y;
-            obj.hyp = [log(1) log(0.01*ones(1,obj.D)) -5];
             
-            obj.jitter = 1e-8;
-            
+            obj.hyp = hyp;
+                        
             fprintf('Total number of parameters: %d\n', length(obj.hyp));
         end
         
         function [NLML,D_NLML] = likelihood(obj, hyp)
             
-            sigma_eps = exp(hyp(end));
+            X_ = obj.X;
+            y_ = obj.y;
             
-            K = kernel(obj.X, obj.X, hyp(1:obj.D+1),0) + eye(obj.N)*sigma_eps;
-            K = K + eye(obj.N).*obj.jitter;
+            N = size(y_,1);
+            
+            sigma = exp(hyp(end));
+            hyp_ = hyp(1:end-1);
+            
+            K = kernel(X_, X_, hyp_ ,0) + eye(N)*sigma;
             
             % Cholesky factorisation
-            [L,p]=chol(K,'lower');
-            
-            if p > 0
-                fprintf(1,'Covariance is ill-conditioned\n');
-            end
+            L = jit_chol(K);
             
             alpha = L'\(L\obj.y);
-            NLML = 0.5*obj.y'*alpha + sum(log(diag(L))) + log(2*pi)*obj.N/2;
+            NLML = 0.5*y_'*alpha + sum(log(diag(L))) + log(2*pi)*N/2;
             
             D_NLML = 0*hyp;
-            Q =  L'\(L\eye(obj.N)) - alpha*alpha';
-            for i=1:obj.D+1
-                DK = kernel(obj.X, obj.X, hyp(1:obj.D+1),i);
+            Q =  L'\(L\eye(N)) - alpha*alpha';
+            for i=1:length(hyp_)
+                DK = kernel(X_, X_, hyp_, i);
                 
-                D_NLML(i) = trace(Q*DK)/2;
+                D_NLML(i) = sum(sum(Q.*DK))/2;
             end
             
-            D_NLML(end) = sigma_eps*trace(Q)/2;
+            D_NLML(end) = sigma*trace(Q)/2;
         end
         
-        function obj = train(obj)
-            options = optimoptions('fminunc','GradObj','on','Display','iter',...
-                'Algorithm','trust-region','Diagnostics','on','DerivativeCheck','on',...
-                'FinDiffType','central');
-            obj.hyp = fminunc(@obj.likelihood,obj.hyp,options);
+        function obj = train(obj, n_iter)                        
+            [obj.hyp,~,~] = minimize(obj.hyp, @obj.likelihood, -n_iter);
+            obj.NLML = obj.likelihood(obj.hyp);
         end
         
-        function [mean_star, var_star] = predict(obj, x_star)
+        function [mean_star, var_star] = predict(obj, X_star)
             
-            sigma_eps = exp(obj.hyp(end));
+            X_ = obj.X;
+            y_ = obj.y;
             
-            K = kernel(obj.X, obj.X, obj.hyp(1:obj.D+1),0) + eye(obj.N)*sigma_eps;
-            K = K + eye(obj.N).*obj.jitter;
+            N = size(y_,1);
+            
+            sigma = exp(obj.hyp(end));
+            hyp_ = obj.hyp(1:end-1);
+            
+            K = kernel(X_, X_, hyp_ ,0) + eye(N)*sigma;
             
             % Cholesky factorisation
-            [L,p]=chol(K,'lower');
+            L = jit_chol(K);
             
-            if p > 0
-                fprintf(1,'Covariance is ill-conditioned\n');
-            end
-            
-            psi = kernel(x_star, obj.X, obj.hyp(1:obj.D+1),0);
+            psi = kernel(X_star, obj.X, hyp_, 0);
             
             % calculate prediction
             mean_star = psi*(L'\(L\obj.y));
             
-            var_star = kernel(x_star, x_star, obj.hyp(1:obj.D+1),0) ...
+            var_star = kernel(X_star, X_star, hyp_, 0) ...
                 - psi*(L'\(L\psi'));
             
             var_star = abs(diag(var_star));
