@@ -352,6 +352,13 @@ All data and codes for this tutorial are publicly available on [GitHub](https://
 * * * * *
 ## Citation
 
+	@article{raissi2016deep,
+	  title={Deep Multi-fidelity Gaussian Processes},
+	  author={Raissi, Maziar and Karniadakis, George},
+	  journal={arXiv preprint arXiv:1604.07484},
+	  year={2016}
+	}
+
 	@article{raissi2017inferring,
 	  title={Inferring solutions of differential equations using noisy multi-fidelity data},
 	  author={Raissi, Maziar and Perdikaris, Paris and Karniadakis, George Em},
@@ -373,5 +380,4 @@ All data and codes for this tutorial are publicly available on [GitHub](https://
 	  url = "http://www.sciencedirect.com/science/article/pii/S0021999117305582",
 	  author = "Maziar Raissi and Paris Perdikaris and George Em Karniadakis"
 	}
-
 
