@@ -343,7 +343,7 @@ Here, $$\alpha = 1$$. The algorithm learns the parameter $$\alpha$$ to have valu
 
 **Further Reading**
 
-For more information please refer to [paper1](http://www.sciencedirect.com/science/article/pii/S0021999117305582) and [paper2](http://www.sciencedirect.com/science/article/pii/S0021999117300761). The codes for these two papers are publicly available on [GitHub](https://github.com/maziarraissi/machine-learning-of-linear-differential-equations).
+For more information please refer to [paper 1](http://www.sciencedirect.com/science/article/pii/S0021999117305582) and [paper 2](http://www.sciencedirect.com/science/article/pii/S0021999117300761). The codes for these two papers are publicly available on [GitHub](https://github.com/maziarraissi/machine-learning-of-linear-differential-equations).
 
 * * * * * 
 
