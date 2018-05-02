@@ -1,8 +1,8 @@
-# TutorialGP
+# [Tutorial on Gaussian Processes](https://maziarraissi.github.io/TutorialGP/)
 
 This is a short tutorial on Gaussian Processes, Multi-fidelity Gaussian Processes, Gaussian Processes for Differential Equations, and Bayesian Optimization.
 
-For more details, please refer to the following references:
+For more details, please refer to the following references: (https://maziarraissi.github.io/TutorialGP/)
 
 1) Rasmussen, Carl Edward. "Gaussian processes for machine learning." (2006).
 
